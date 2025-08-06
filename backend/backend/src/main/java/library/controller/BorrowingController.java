@@ -1,33 +1,71 @@
 package library.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import library.dto.BorrowDTO;
+import library.dto.BorrowingRecordDTO;
 import library.dto.ReturnDTO;
 import library.service.BorrowingService;
 
-@RestController // @Controller + @ResponseBody
-@RequestMapping("/api/borrowing") // 根源路徑
+@RestController
+@RequestMapping("/api/borrowing")
 public class BorrowingController {
 
     @Autowired
-    private BorrowingService borrowingService; // 依賴注入
+    private BorrowingService borrowingService;
 
     @PostMapping("/borrow")
-    // 前端呼叫後端API後，對應到這個Controller，傳DTO參數進來(用@RequestBody將json格式資料轉成BorrowDTO類型的物件)
-    public String borrow(@RequestBody BorrowDTO borrowRequest) {
-        borrowingService.borrow(borrowRequest); // 去Service類別裡面調用借書的方法(對這個物件做一些判斷邏輯或處理)
-        return "借書成功"; // 回傳結果給前端去接
+    public Map<String, Object> borrow(@RequestBody BorrowDTO borrowRequest) {
+        Map<String, Object> borrowResponse = new HashMap<>();
+        try {
+            // ✅ 使用 JWT 解出身分，不再需要從 DTO 傳 userId
+            borrowingService.borrow(borrowRequest);
+            borrowResponse.put("success", true);
+            borrowResponse.put("message", "借書成功");
+        } catch (Exception e) {
+            borrowResponse.put("success", false);
+            borrowResponse.put("message", e.getMessage());
+        }
+        return borrowResponse;
     }
 
     @PostMapping("/return")
-    // 前端呼叫後端API後，對應到這個Controller，傳DTO參數進來(用@RequestBody將json格式資料轉成ReturnDTO類型的物件)
-    public String returnBook(@RequestBody ReturnDTO returnRequest) {
-        borrowingService.returnBook(returnRequest); // 去Service類別裡面調用還書的方法(對這個物件做一些判斷邏輯或處理)
-        return "還書成功"; // 回傳結果給前端去接
+    public Map<String, Object> returnBook(@RequestBody ReturnDTO returnRequest) {
+        Map<String, Object> returnResponse = new HashMap<>();
+        try {
+            borrowingService.returnBook(returnRequest);
+            returnResponse.put("success", true);
+            returnResponse.put("message", "還書成功");
+        } catch (Exception e) {
+            returnResponse.put("success", false);
+            returnResponse.put("message", e.getMessage());
+        }
+        return returnResponse;
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<Map<String, Object>> getCurrentBorrowings() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // ✅ 不需要手動取得 phoneNumber，service 中會自動透過 JWT 取得 userId
+            List<BorrowingRecordDTO> records = borrowingService.getUserBorrowedBooks();
+            response.put("success", true);
+            response.put("data", records);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "系統錯誤：" + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 }

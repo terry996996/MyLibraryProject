@@ -1,8 +1,8 @@
-// package library.repository;
+package library.repository;
 
-// import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-// import library.domain.BookBean;
+import library.domain.BookBean;
 
-// public interface BookRepository extends JpaRepository<BookBean, String> {
-// }
+public interface BookRepository extends JpaRepository<BookBean, String> {
+}

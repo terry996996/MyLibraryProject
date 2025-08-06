@@ -1,0 +1,116 @@
+/* 整頁置中 */
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+/* 卡片容器 */
+.login-card {
+    background-color: #ffffff;
+    padding: 4rem 3.5rem;
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+}
+
+/* 標題樣式 */
+.login-card h2 {
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* 輸入欄位標籤 */
+.login-card label {
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 輸入框 */
+.login-card input.form-control {
+    height: 52px;
+    font-size: 1.15rem;
+    padding: 0.65rem 1rem;
+}
+
+/* 輸入欄位之間間距 */
+.login-card .mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* 登入按鈕 */
+.btn-block {
+    width: 100%;
+    font-size: 1.25rem;
+    padding: 0.85rem;
+}
+
+/* 註冊按鈕 */
+.btn-register {
+    width: 100%;
+    font-size: 1.15rem;
+    padding: 0.75rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 滑鼠懸停變色 */
+.btn-register:hover {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+/* 密碼強度條樣式 */
+.password-strength-bar {
+    height: 8px;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    margin-top: 0.25rem;
+}
+
+.password-strength-bar.weak {
+    background-color: #dc3545;
+    /* 紅色 */
+}
+
+.password-strength-bar.medium {
+    background-color: #ffc107;
+    /* 橘色 */
+}
+
+.password-strength-bar.strong {
+    background-color: #28a745;
+    /* 綠色 */
+}
+
+/* 解決自動帶入字體過小的問題 */
+input:-webkit-autofill {
+    font-size: 1.15rem !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+    /* 避免背景變黃 */
+    -webkit-text-fill-color: #000 !important;
+}
+
+/* 浮上動畫 */
+@keyframes popUp {
+    0% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-pop {
+    animation: popUp 0.5s ease-out forwards;
+}

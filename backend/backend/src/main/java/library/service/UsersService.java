@@ -15,6 +15,9 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
 
+    /**
+     * 註冊帳號：會進行加鹽雜湊，並使用預存程序插入使用者
+     */
     public void register(RegisterDTO registerRequest) {
         String salt = PasswordUtil.generateSalt();
         String hash = PasswordUtil.hashPassword(registerRequest.getPassword(), salt);
@@ -30,28 +33,46 @@ public class UsersService {
         }
     }
 
+    /**
+     * 登入：驗證密碼後回傳完整使用者資訊（Controller 將用來生成 JWT）
+     */
     public UsersBean login(LoginDTO loginRequest) {
-        Object[] result;
-        try {
-            result = (Object[]) usersRepository.loginUserRaw(loginRequest.getPhoneNumber());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("帳號不存在");
-        }
+        UsersBean user = getUserByPhoneRaw(loginRequest.getPhoneNumber());
 
-        UsersBean user = new UsersBean();
-        user.setUserId(((Number) result[0]).longValue());
-        user.setPasswordHash((String) result[1]);
-        user.setPasswordSalt((String) result[2]);
-        user.setUserName((String) result[3]);
-
-        String inputHash = PasswordUtil.hashPassword(loginRequest.getPassword(), user.getPasswordSalt());
-
-        if (!inputHash.equals(user.getPasswordHash())) {
+        String hashed = PasswordUtil.hashPassword(loginRequest.getPassword(), user.getPasswordSalt());
+        if (!hashed.equals(user.getPasswordHash())) {
             throw new IllegalArgumentException("密碼錯誤");
         }
 
+        // 驗證通過 → 更新登入時間
         usersRepository.updateLastLogin(user.getUserId());
 
+        // 回傳給 Controller 做後續 JWT 處理
         return user;
+    }
+
+    /**
+     * 從 phoneNumber 查詢完整使用者資訊，供 login 和 JWT 驗證使用
+     */
+    public UsersBean getUserByPhoneRaw(String phoneNumber) {
+        Object rawResult = usersRepository.loginUserRaw(phoneNumber);
+        if (rawResult == null) {
+            throw new IllegalArgumentException("查無此組手機號碼");
+        }
+
+        try {
+            Object[] row = (Object[]) rawResult;
+
+            UsersBean user = new UsersBean();
+            user.setUserId(((Number) row[0]).longValue());
+            user.setPhoneNumber((String) row[1]);
+            user.setPasswordHash((String) row[2]);
+            user.setPasswordSalt((String) row[3]);
+            user.setUserName((String) row[4]);
+
+            return user;
+        } catch (Exception e) {
+            throw new IllegalStateException("資料格式錯誤，請檢查預存程序欄位順序", e);
+        }
     }
 }

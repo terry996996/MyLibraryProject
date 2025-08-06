@@ -27,7 +27,7 @@ CREATE OR ALTER PROCEDURE loginUser
     @phoneNumber VARCHAR(20)
 AS
 BEGIN
-    SELECT TOP 1 user_id, password_hash, password_salt, user_name
+    SELECT TOP 1 user_id, phone_number, password_hash, password_salt, user_name
     FROM users
     WHERE phone_number = @phoneNumber;
 END;
@@ -55,31 +55,44 @@ CREATE OR ALTER PROCEDURE borrowBook
 AS
 BEGIN
     SET XACT_ABORT ON;
-	-- 開啟明顯交易模式，滿足ACID(單元、一致、隔離、永久)
     BEGIN TRANSACTION;
 
+    DECLARE @isbn NVARCHAR(20);
+
+    -- 先取得 inventory 對應的 ISBN
+    SELECT @isbn = isbn FROM inventory WHERE inventory_id = @inventoryId;
+
+    -- 檢查此使用者是否已借過相同書籍但尚未歸還
     IF EXISTS (
-		-- 能借的狀態
+        SELECT 1
+        FROM borrowing_record br
+        JOIN inventory i ON br.inventory_id = i.inventory_id
+        WHERE br.user_id = @userId AND i.isbn = @isbn AND br.return_time IS NULL
+    )
+    BEGIN
+        ROLLBACK TRANSACTION;
+        RAISERROR(N'您已借閱此書籍，請先歸還後再借。', 16, 1);
+        RETURN;
+    END
+
+    -- 檢查此 inventory 是否可借
+    IF EXISTS (
         SELECT 1 FROM inventory 
         WHERE inventory_id = @inventoryId AND status = N'在庫'
     )
     BEGIN
-		-- 在庫 -> 出借中
         UPDATE inventory SET status = N'出借中' WHERE inventory_id = @inventoryId;
-
-		-- 新增書的出借紀錄資料
         INSERT INTO borrowing_record (user_id, inventory_id)
         VALUES (@userId, @inventoryId);
     END
     ELSE
     BEGIN
-		-- 交易回滾
         ROLLBACK TRANSACTION;
-        RAISERROR(N'此書不可借閱（可能已被借出）。', 16, 1); -- 不能借
+        RAISERROR(N'此書不可借閱（可能已被借出）。', 16, 1);
         RETURN;
     END
 
-    COMMIT TRANSACTION; -- 手動commit這組交易
+    COMMIT TRANSACTION;
 END;
 GO
 ---------- 借書的預存程序 ---------- 
@@ -122,3 +135,40 @@ BEGIN
 END;
 GO
 ---------- 還書的預存程序 ----------
+
+
+
+---------- 查詢使用者尚未還歸還書籍的預存程序 ----------
+CREATE OR ALTER PROCEDURE getUnreturnedBooksByUserId
+    @userId BIGINT
+AS
+BEGIN
+    SELECT 
+        br.record_id,                    -- index 0
+        br.borrowing_time,               -- index 1
+        b.name AS book_name,             -- index 2
+        i.inventory_id                   -- index 3（你需要的欄位）
+    FROM borrowing_record br
+    JOIN inventory i ON br.inventory_id = i.inventory_id
+    JOIN book b ON i.isbn = b.isbn
+    WHERE br.user_id = @userId AND br.return_time IS NULL;
+END;
+GO
+---------- 查詢使用者尚未還歸還書籍的預存程序 ----------
+
+CREATE OR ALTER PROCEDURE getAllBooksWithInventories
+AS
+BEGIN
+    SELECT 
+        b.ISBN,
+        b.name AS book_name,
+        b.author,
+        b.introduction,
+        i.inventory_id,
+		i.status,
+        i.store_time
+    FROM book b
+    LEFT JOIN inventory i ON b.ISBN = i.ISBN
+    ORDER BY b.ISBN, i.inventory_id;
+END;
+GO
