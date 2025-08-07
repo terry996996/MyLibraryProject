@@ -1,8 +1,16 @@
 <template>
     <div class="login-page">
+        <!-- 🌌 動態背景層 -->
+        <div class="animated-bg">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+        </div>
+
+        <!-- 登入卡片 -->
         <div class="login-card animate-pop">
             <h2 class="text-center mb-4">登入</h2>
-
             <div class="login-form">
                 <!-- 📱 手機號碼 -->
                 <div class="mb-3">
@@ -32,6 +40,7 @@
         </div>
     </div>
 </template>
+
 
 <script setup>
 import { ref, computed } from 'vue'

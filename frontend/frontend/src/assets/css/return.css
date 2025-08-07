@@ -65,16 +65,16 @@
     z-index: 0;
 }
 
-.bg-gradient-primary::before {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
+.bg-gradient-info::before {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.bg-gradient-warning::before {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
 }
 
 .bg-gradient-success::before {
     background: linear-gradient(135deg, #28a745, #20c997);
-}
-
-.bg-gradient-info::before {
-    background: linear-gradient(135deg, #17a2b8, #138496);
 }
 
 .stat-icon {
@@ -103,8 +103,28 @@
     font-weight: 500;
 }
 
-/* 書籍卡片 */
-.book-card {
+/* 空狀態 */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.empty-state h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+/* 借閱紀錄卡片 */
+.record-card {
     background: white;
     border-radius: 1rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -114,41 +134,52 @@
     position: relative;
 }
 
-.book-card:hover {
+.record-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-.book-cover {
-    height: 300px;
-    background: rgba(224, 219, 219, 0.894);
+.record-card.overdue {
+    border-left: 4px solid #dc3545;
+}
+
+.record-header {
+    height: 80px;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: space-between;
+    padding: 1rem;
 }
 
-.book-cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.record-card.overdue .record-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
 }
 
-/* .book-spine {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    bottom: 10px;
-    width: 6px;
-    background: linear-gradient(to bottom, #654321, #8b4513);
-    border-radius: 3px;
-} */
+.record-status {
+    padding: 0.4rem 0.8rem;
+    padding-right: 1.2rem;
+    margin-left: 0.4rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.status-normal {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.status-overdue {
+    background: rgba(255, 255, 255, 0.2);
+}
 
 .book-icon {
-    font-size: 3rem;
-    color: #f4f1de;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .card-body {
@@ -164,11 +195,6 @@
     margin-left: 0.2rem;
 }
 
-.book-title:hover {
-    color: #4a90e2;
-    text-decoration: none;
-}
-
 .book-author {
     color: #6c757d;
     font-size: 0.95rem;
@@ -181,53 +207,65 @@
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 1rem;
+    margin-left: 0.3rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* 庫存標籤 */
-.stock-info {
+/* 時間資訊 */
+.time-info {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
     margin-bottom: 1rem;
 }
 
-.stock-badge {
-    display: inline-block;
-    padding: 0.4rem 0.8rem;
-    border-radius: 50px;
-    font-size: 0.85rem;
+.time-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.time-item:last-child {
+    margin-bottom: 0;
+}
+
+.time-label {
     font-weight: 500;
+    color: #495057;
+    margin-right: 0.5rem;
 }
 
-.stock-available {
-    background-color: #d4edda;
-    color: #155724;
+.time-value {
+    color: #6c757d;
 }
 
-.stock-low {
-    background-color: #fff3cd;
-    color: #856404;
+.days-remaining {
+    text-align: center;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #dee2e6;
 }
 
-.stock-empty {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* 借閱按鈕 */
-.borrow-btn {
+/* 還書按鈕 */
+.return-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
     border-radius: 50px;
     font-weight: 500;
     padding: 0.7rem 1.2rem;
     transition: all 0.3s ease;
-    border: none;
     width: 100%;
 }
 
-.borrow-btn:hover:not(:disabled) {
+.return-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    background: linear-gradient(135deg, #20c997, #28a745);
 }
 
 /* 區塊標題 */
@@ -352,6 +390,35 @@ html {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.swal2-confirm-btn,
+.swal2-cancel-btn {
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.swal2-confirm-btn {
+    background: #198754;
+    color: white;
+}
+
+.swal2-cancel-btn {
+    background: #adb5bd;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.swal2-confirm-btn:hover {
+    background: #157347;
+}
+
+.swal2-cancel-btn:hover {
+    background: #6c757d;
 }
 
 .scroll-to-top {

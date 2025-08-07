@@ -1,10 +1,17 @@
 <template>
     <div class="login-page">
+        <!-- 🌸 註冊頁專用背景動畫 -->
+        <div class="animated-bg-register">
+            <div class="floating-star star-a"></div>
+            <div class="floating-star star-b"></div>
+            <div class="floating-star star-c"></div>
+            <div class="floating-star star-d"></div>
+        </div>
+
+        <!-- 🚪 註冊表單 -->
         <div class="login-card animate-pop">
             <h2 class="text-center mb-4">註冊</h2>
-
             <div class="login-form">
-
                 <!-- 🙍‍♂️ 使用者名稱 -->
                 <div class="mb-3">
                     <label>使用者名稱</label>
@@ -35,7 +42,6 @@
                         <small class="d-block mt-1">{{ passwordStrengthText }}</small>
                     </div>
                 </div>
-
 
                 <button class="btn btn-success btn-block mb-3" :disabled="!canSubmit" @click="handleRegister">
                     註冊
@@ -134,6 +140,7 @@ const onPasswordBlur = () => {
     }
 }
 
+// 密碼強度條
 const passwordStrengthText = computed(() => {
     const pwd = form.value.password
     if (!pwd) return ''
@@ -175,7 +182,7 @@ const canSubmit = computed(() => {
 // ✅ 註冊 API
 const handleRegister = async () => {
     try {
-        const res = await axios.post('http://localhost:8080/api/users/register', form.value)
+        await axios.post('http://localhost:8080/api/users/register', form.value)
 
         let timerInterval
         let remainingSeconds = 5
