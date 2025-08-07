@@ -1,0 +1,221 @@
+/* 此樣式大致參考登入頁的設計 */
+
+/* 頁面置中 */
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+/* 卡片container */
+.login-card {
+    background-color: #ffffff;
+    padding: 4rem 3.5rem;
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+}
+
+/* 標題 */
+.login-card h2 {
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* 輸入欄位的標籤 */
+.login-card label {
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 輸入框 */
+.login-card input.form-control {
+    height: 52px;
+    font-size: 1.15rem;
+    padding: 0.65rem 1rem;
+}
+
+/* 輸入框與文字彼此間的間距 */
+.login-card .mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* 登入按鈕 */
+.btn-block {
+    width: 100%;
+    font-size: 1.25rem;
+    padding: 0.85rem;
+}
+
+/* 註冊按鈕 */
+.btn-register {
+    width: 100%;
+    font-size: 1.15rem;
+    padding: 0.75rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 滑鼠停留會變色 */
+.btn-register:hover {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+/*  註冊頁背景樣式 (我這邊設計星空的背景主題)*/
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top left, #1e3a8a, #0f172a);
+    /* 粉紅 + 淡橘 */
+    overflow: hidden;
+}
+
+
+.animated-bg-register {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* 星星(下面有加入浮動、閃爍、放大動畫) */
+.floating-star {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #f6f871;
+    clip-path: polygon(50% 0%,
+            61% 35%,
+            98% 35%,
+            68% 57%,
+            79% 91%,
+            50% 70%,
+            21% 91%,
+            32% 57%,
+            2% 35%,
+            39% 35%);
+    opacity: 0.3;
+    animation: twinkleFloat 12s infinite ease-in-out;
+    transition: transform 0.3s ease;
+}
+
+/* 個別星星的樣式調整 */
+.star-a {
+    top: 12%;
+    left: 10%;
+    width: 70px;
+    height: 70px;
+    background-color: #f6f871;
+    animation-delay: 0s;
+}
+
+.star-b {
+    top: 28%;
+    right: 12%;
+    width: 60px;
+    height: 60px;
+    background-color: #f6f871;
+    animation-delay: 1s;
+}
+
+.star-c {
+    bottom: 18%;
+    left: 18%;
+    width: 50px;
+    height: 50px;
+    background-color: #f6f871;
+    animation-delay: 2s;
+}
+
+.star-d {
+    bottom: 8%;
+    right: 22%;
+    width: 65px;
+    height: 65px;
+    background-color: #f6f871;
+    animation-delay: 3s;
+}
+
+/* 動畫 */
+@keyframes twinkleFloat {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.3;
+    }
+
+    25% {
+        transform: translateY(-30px) rotate(10deg) scale(1.15);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateY(-60px) rotate(20deg) scale(1.25);
+        opacity: 0.8;
+    }
+
+    75% {
+        transform: translateY(-30px) rotate(10deg) scale(1.15);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.3;
+    }
+}
+
+/* 密碼強度條 */
+.password-strength-bar {
+    height: 8px;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    margin-top: 0.25rem;
+}
+
+.password-strength-bar.weak {
+    background-color: #dc3545;
+}
+
+.password-strength-bar.medium {
+    background-color: #ffc107;
+}
+
+.password-strength-bar.strong {
+    background-color: #28a745;
+}
+
+/* 解決字體可能過小的問題 */
+input:-webkit-autofill {
+    font-size: 1.15rem !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+}
+
+/* container浮上來的小動畫 */
+@keyframes popUp {
+    0% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-pop {
+    animation: popUp 0.5s ease-out forwards;
+}
